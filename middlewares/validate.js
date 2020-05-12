@@ -1,11 +1,9 @@
-const db = require("../data/config-db");
+const db = require("../car-routes/cars-schema");
 
 function validateId(req, res, next) {
   const { id } = req.params;
 
-  db("dealer")
-    .where({ id })
-    .first()
+  db.findById(id)
     .then((car) => {
       if (car) {
         req.car = car;

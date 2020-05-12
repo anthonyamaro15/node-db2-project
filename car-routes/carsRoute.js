@@ -1,12 +1,11 @@
 const express = require("express");
-const db = require("../data/config-db");
+const db = require("./cars-schema");
 const { validateId, validateBody } = require("../middlewares/validate");
 
 const route = express.Router();
 
 route.post("/", validateBody, (req, res) => {
-  db("dealer")
-    .insert(req.body, "id")
+  db.add(req.body)
     .then((car) => {
       res.status(201).json(car);
     })
@@ -18,7 +17,7 @@ route.post("/", validateBody, (req, res) => {
 });
 
 route.get("/", (req, res) => {
-  db("dealer")
+  db.find()
     .then((cars) => {
       res.status(200).json(cars);
     })
@@ -33,9 +32,7 @@ route.get("/:id", validateId, (req, res) => {
 
 route.put("/:id", validateId, validateBody, (req, res) => {
   const { id } = req.params;
-  db("dealer")
-    .where({ id })
-    .update(req.body)
+  db.update(id, req.body)
     .then((car) => {
       res.status(200).json(car);
     })
@@ -48,9 +45,7 @@ route.put("/:id", validateId, validateBody, (req, res) => {
 
 route.delete("/:id", validateId, (req, res) => {
   const { id } = req.params;
-  db("dealer")
-    .where({ id })
-    .del()
+  db.remove(id)
     .then((car) => {
       res.status(200).json(car);
     })
