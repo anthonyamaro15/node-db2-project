@@ -1,9 +1,10 @@
 const express = require("express");
 const db = require("../data/config-db");
+const { validateId, validateBody } = require("../middlewares/validate");
 
 const route = express.Router();
 
-route.post("/", (req, res) => {
+route.post("/", validateBody, (req, res) => {
   db("dealer")
     .insert(req.body, "id")
     .then((car) => {
@@ -26,22 +27,11 @@ route.get("/", (req, res) => {
     });
 });
 
-route.get("/:id", (req, res) => {
-  const { id } = req.params;
-  db("dealer")
-    .where({ id })
-    .first()
-    .then((car) => {
-      res.status(200).json(car);
-    })
-    .catch((err) => {
-      res
-        .status(500)
-        .json({ errorMessage: "there was an error finding the car" });
-    });
+route.get("/:id", validateId, (req, res) => {
+  res.status(200).json(req.car);
 });
 
-route.put("/:id", (req, res) => {
+route.put("/:id", validateId, validateBody, (req, res) => {
   const { id } = req.params;
   db("dealer")
     .where({ id })
@@ -56,7 +46,7 @@ route.put("/:id", (req, res) => {
     });
 });
 
-route.delete("/:id", (req, res) => {
+route.delete("/:id", validateId, (req, res) => {
   const { id } = req.params;
   db("dealer")
     .where({ id })
