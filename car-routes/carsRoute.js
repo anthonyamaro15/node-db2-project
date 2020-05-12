@@ -41,4 +41,33 @@ route.get("/:id", (req, res) => {
     });
 });
 
+route.put("/:id", (req, res) => {
+  const { id } = req.params;
+  db("dealer")
+    .where({ id })
+    .update(req.body)
+    .then((car) => {
+      res.status(200).json(car);
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ errorMessage: "there was an error trying to update car" });
+    });
+});
+
+route.delete("/:id", (req, res) => {
+  const { id } = req.params;
+  db("dealer")
+    .where({ id })
+    .del()
+    .then((car) => {
+      res.status(200).json(car);
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ errorMessage: "the was an error deleting the car" });
+    });
+});
 module.exports = route;
